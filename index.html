@@ -1274,16 +1274,6 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
   opacity: 0 !important;
 }
 
-.stack .look-card.peek {
-  transform: translateY(-8px) scale(1.08) rotate(0deg) !important;
-  opacity: 1 !important;
-  z-index: 40;
-  border-color: var(--accent-2);
-  box-shadow: 0 0 0 1px var(--accent-2), 0 30px 60px -20px rgba(0,0,0,.55);
-  pointer-events: auto;
-  transition: transform .4s var(--ease), opacity .4s var(--ease), box-shadow .4s var(--ease);
-}
-
 .stack-hint{
   display: inline-flex;
   align-items: center;
@@ -2226,7 +2216,7 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
   display: grid;
   place-items: center;
   padding: 22px;
-  background: rgba(10, 7, 6, .9);
+  background: rgba(10, 7, 6, .94);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   opacity: 0;
@@ -2560,7 +2550,6 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
 
   .look-track .look-card.emph{ transform: none !important; box-shadow: var(--shadow) !important; }
   .stack .look-card{ transition: none !important; }
-  .stack .look-card.peek { transform: none !important; }
 }
 
 </style>
@@ -3889,7 +3878,7 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
     var stackHint = document.getElementById('stackHint');
 
     if (stack && stackWrap && lookMob && mobRailInner) {
-      FRAMES.forEach(function (d) { stack.appendChild(makeCard(d, true)); });
+      FRAMES.forEach(function (d) { stack.appendChild(makeCard(d)); });
       FRAMES.forEach(function (d) { mobRailInner.appendChild(makeCard(d)); });
 
       var stackCards = Array.prototype.slice.call(stack.children);
@@ -3897,7 +3886,6 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
       var topIdx = 0;
       var advanceTimer = null;
       var opened = false;
-      var peekTimer = null;
 
       function paintStack() {
         stackCards.forEach(function (card, i) {
@@ -3935,29 +3923,7 @@ body.hero-in .hero-title .mask:nth-child(3) > span{ transition-delay: .24s; }
         window.clearInterval(advanceTimer);
         advanceTimer = null;
         if (stackHint) { stackHint.style.display = 'none'; }
-        stackCards.forEach(function (c) { c.classList.remove('peek'); });
       }
-
-      stackCards.forEach(function (card) {
-        card.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (opened) { return; }
-          var depth = parseInt(card.style.getPropertyValue('--d'), 10) || 0;
-          if (depth !== 0) { return; }
-
-          window.clearInterval(advanceTimer);
-          advanceTimer = null;
-
-          stackCards.forEach(function (c) { c.classList.remove('peek'); });
-          card.classList.add('peek');
-
-          window.clearTimeout(peekTimer);
-          peekTimer = window.setTimeout(function () {
-            card.classList.remove('peek');
-            if (!opened) { startAutoAdvance(); }
-          }, 1500);
-        });
-      });
 
       stackWrap.addEventListener('wheel', function (e) {
         if (opened) { return; }
